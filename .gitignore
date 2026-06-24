@@ -1,0 +1,12 @@
+# A pasta android/ e gerada na nuvem a cada build (flutter create), nao versiona.
+/android/
+/ios/
+/build/
+/.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+pubspec.lock
+*.iml
+.idea/
+.DS_Store
