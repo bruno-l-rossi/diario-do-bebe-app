@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
 import '../config.dart';
+import '../theme.dart';
 import 'events_repo.dart';
 import 'session_store.dart';
 
@@ -15,6 +17,25 @@ const List<EventType> kNotifButtons = [
   EventType.mamada,
   EventType.despertar,
 ];
+
+/// Cor do texto de cada botao na notificacao (mesma paleta do app).
+Color _btnColor(EventType t) {
+  switch (t) {
+    case EventType.soneca:
+      return AppColors.soneca;
+    case EventType.mamada:
+      return AppColors.mamada;
+    case EventType.despertar:
+      return AppColors.despertar;
+    default:
+      return AppColors.accent;
+  }
+}
+
+List<NotificationButton> _notifButtons() => [
+      for (final t in kNotifButtons)
+        NotificationButton(id: t.id, text: t.label, textColor: _btnColor(t)),
+    ];
 
 @pragma('vm:entry-point')
 void startCallback() {
@@ -50,8 +71,8 @@ class BabyTaskHandler extends TaskHandler {
     final baby = await SessionStore.babyName();
     FlutterForegroundTask.updateService(
       notificationTitle: '$baby — $msg',
-      notificationText: 'Toque um botão pra registrar',
-      notificationButtons: _buttons(),
+      notificationText: 'Soneca · Mamada · Despertar',
+      notificationButtons: _notifButtons(),
     );
   }
 
@@ -69,14 +90,9 @@ class BabyTaskHandler extends TaskHandler {
     FlutterForegroundTask.updateService(
       notificationTitle: '$baby — diário aberto',
       notificationText: 'Soneca · Mamada · Despertar num toque',
-      notificationButtons: _buttons(),
+      notificationButtons: _notifButtons(),
     );
   }
-
-  List<NotificationButton> _buttons() => [
-        for (final t in kNotifButtons)
-          NotificationButton(id: t.id, text: t.label),
-      ];
 }
 
 /// Liga/desliga e configura o servico. Chamado pelo app.
@@ -84,11 +100,17 @@ class ForegroundController {
   static Future<void> init() async {
     FlutterForegroundTask.init(
       androidNotificationOptions: AndroidNotificationOptions(
-        channelId: 'diario_bebe_fixo',
+        // Canal novo (v2): a importancia so e aplicada na criacao do canal.
+        // DEFAULT faz a notificacao aparecer na tela de bloqueio; sem som/vibra.
+        channelId: 'diario_bebe_lockscreen_v2',
         channelName: 'Diário do Bebê (botões fixos)',
         channelDescription:
             'Notificação fixa com os botões de registro do bebê.',
+        channelImportance: NotificationChannelImportance.DEFAULT,
+        priority: NotificationPriority.DEFAULT,
         onlyAlertOnce: true,
+        playSound: false,
+        enableVibration: false,
         visibility: NotificationVisibility.VISIBILITY_PUBLIC,
       ),
       iosNotificationOptions: const IOSNotificationOptions(),
@@ -114,10 +136,7 @@ class ForegroundController {
         serviceId: 256,
         notificationTitle: '$baby — diário aberto',
         notificationText: 'Soneca · Mamada · Despertar num toque',
-        notificationButtons: [
-          for (final t in kNotifButtons)
-            NotificationButton(id: t.id, text: t.label),
-        ],
+        notificationButtons: _notifButtons(),
         callback: startCallback,
       );
     }

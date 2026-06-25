@@ -16,6 +16,15 @@ gh repo create diario-do-bebe-app --public --source=. --remote=origin --push
 
 Assim que subir, o GitHub já começa a montar o arquivo do app sozinho.
 
+**Se o repositório já existe** (você já subiu antes), é só mandar as mudanças:
+
+```bash
+cd "OUTPUTS/diario-do-bebe-app"
+git add .
+git commit -m "Visual fiel ao site, gráficos e tela de bloqueio"
+git push
+```
+
 ## Passo 2 — pegar o arquivo do app (APK)
 
 Duas formas:
@@ -27,8 +36,8 @@ abra o repositório no GitHub → aba **Actions** → clique na execução mais 
 cole no Claude Code pra marcar uma versão:
 
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+git tag v1.1.0
+git push origin v1.1.0
 ```
 
 O arquivo aparece na aba **Releases** do repositório, com link fixo pra baixar e reinstalar quando quiser. Toda vez que você (ou eu) mudar algo, é só repetir com `v1.0.1`, `v1.0.2`, etc.

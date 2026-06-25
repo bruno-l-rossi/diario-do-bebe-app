@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../main.dart' show kAccent, kCard, kMuted, kText, kBg;
-import '../services/events_repo.dart';
+import '../data/store.dart';
+import '../theme.dart';
 
 /// Folha pra registrar refeicao: quanto comeu + quem serviu + nota opcional.
 /// Pensado pra introducao alimentar, onde a recusa e o dado que mais importa.
 Future<bool?> showRefeicaoSheet(BuildContext context) {
   return showModalBottomSheet<bool>(
     context: context,
-    backgroundColor: kCard,
+    backgroundColor: AppColors.card,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
@@ -36,7 +36,7 @@ class _RefeicaoFormState extends State<_RefeicaoForm> {
   Future<void> _save() async {
     setState(() => _saving = true);
     try {
-      await EventsRepo.insertRefeicao(
+      await AppStore.I.addRefeicao(
         quality: _quality,
         servedBy: _servedBy,
         note: _note.text.trim(),
@@ -63,9 +63,9 @@ class _RefeicaoFormState extends State<_RefeicaoForm> {
         children: [
           const Text('Refeição',
               style: TextStyle(
-                  fontSize: 20, fontWeight: FontWeight.bold, color: kText)),
+                  fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.ink)),
           const SizedBox(height: 16),
-          const Text('Quanto comeu', style: TextStyle(color: kMuted)),
+          const Text('Quanto comeu', style: TextStyle(color: AppColors.muted)),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -74,15 +74,15 @@ class _RefeicaoFormState extends State<_RefeicaoForm> {
               return ChoiceChip(
                 label: Text(_qualities[i]),
                 selected: sel,
-                selectedColor: kAccent,
-                labelStyle: TextStyle(color: sel ? kBg : kText),
-                backgroundColor: kBg,
+                selectedColor: AppColors.accent,
+                labelStyle: TextStyle(color: sel ? AppColors.bg : AppColors.ink),
+                backgroundColor: AppColors.bg,
                 onSelected: (_) => setState(() => _quality = i),
               );
             }),
           ),
           const SizedBox(height: 16),
-          const Text('Quem serviu', style: TextStyle(color: kMuted)),
+          const Text('Quem serviu', style: TextStyle(color: AppColors.muted)),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -91,9 +91,9 @@ class _RefeicaoFormState extends State<_RefeicaoForm> {
               return ChoiceChip(
                 label: Text(e.value),
                 selected: sel,
-                selectedColor: kAccent,
-                labelStyle: TextStyle(color: sel ? kBg : kText),
-                backgroundColor: kBg,
+                selectedColor: AppColors.accent,
+                labelStyle: TextStyle(color: sel ? AppColors.bg : AppColors.ink),
+                backgroundColor: AppColors.bg,
                 onSelected: (_) => setState(() => _servedBy = e.key),
               );
             }).toList(),
@@ -104,7 +104,7 @@ class _RefeicaoFormState extends State<_RefeicaoForm> {
             decoration: const InputDecoration(
               labelText: 'Nota (opcional)',
               filled: true,
-              fillColor: kBg,
+              fillColor: AppColors.bg,
             ),
           ),
           const SizedBox(height: 20),
@@ -112,7 +112,7 @@ class _RefeicaoFormState extends State<_RefeicaoForm> {
             width: double.infinity,
             child: FilledButton(
               style: FilledButton.styleFrom(
-                backgroundColor: kAccent,
+                backgroundColor: AppColors.accent,
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),
               onPressed: _saving ? null : _save,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../main.dart' show kAccent, kCard, kMuted, kText;
+import '../theme.dart';
 
 /// Login e cadastro por email/senha, mesma conta do app web.
 class AuthScreen extends StatefulWidget {
@@ -56,7 +56,7 @@ class _AuthScreenState extends State<AuthScreen> {
               const Text(
                 'Diário do Bebê',
                 style: TextStyle(
-                    fontSize: 26, fontWeight: FontWeight.bold, color: kText),
+                    fontSize: 26, fontWeight: FontWeight.bold, color: AppColors.ink),
               ),
               const SizedBox(height: 24),
               TextField(
@@ -65,7 +65,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Email',
                   filled: true,
-                  fillColor: kCard,
+                  fillColor: AppColors.card,
                 ),
               ),
               const SizedBox(height: 12),
@@ -75,7 +75,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Senha',
                   filled: true,
-                  fillColor: kCard,
+                  fillColor: AppColors.card,
                 ),
               ),
               if (_error != null) ...[
@@ -88,7 +88,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 width: double.infinity,
                 child: FilledButton(
                   style: FilledButton.styleFrom(
-                    backgroundColor: kAccent,
+                    backgroundColor: AppColors.accent,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                   onPressed: _loading ? null : _submit,
@@ -104,7 +104,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   _signup
                       ? 'Já tenho conta. Entrar'
                       : 'Criar uma conta nova',
-                  style: const TextStyle(color: kMuted),
+                  style: const TextStyle(color: AppColors.muted),
                 ),
               ),
             ],
