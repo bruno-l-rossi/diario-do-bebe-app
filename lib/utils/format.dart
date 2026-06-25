@@ -1,13 +1,31 @@
-/// Formatação de hora/duração, portada do app web. Por ora fixa em 24h
-/// (o seletor 24h/AM-PM fica como próximo passo).
+/// Formatação de hora/duração, portada do app web. Respeita o formato
+/// escolhido nas Configurações (24h ou AM/PM).
+import '../data/settings.dart';
+
 String _p2(int n) => n.toString().padLeft(2, '0');
 
-String fmtHM(int h, int m) => '${_p2(h)}:${_p2(m)}';
+String fmtHM(int h, int m) {
+  if (currentTimeFmt == '12h') {
+    final ap = h < 12 ? 'AM' : 'PM';
+    var hh = h % 12;
+    if (hh == 0) hh = 12;
+    return '$hh:${_p2(m)} $ap';
+  }
+  return '${_p2(h)}:${_p2(m)}';
+}
 
 String fmtH(DateTime d) => fmtHM(d.hour, d.minute);
 
-/// Rótulo curto pro eixo dos gráficos (ex.: "08h").
-String hourLabel(int h) => '${_p2(h)}h';
+/// Rótulo curto pro eixo dos gráficos (ex.: "08h" ou "8a"/"8p").
+String hourLabel(int h) {
+  if (currentTimeFmt == '12h') {
+    final ap = h < 12 ? 'a' : 'p';
+    var hh = h % 12;
+    if (hh == 0) hh = 12;
+    return '$hh$ap';
+  }
+  return '${_p2(h)}h';
+}
 
 /// Duração legível: "menos de 1 min", "23 min", "1h 20min".
 String fmtDur(Duration d) {

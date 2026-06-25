@@ -32,9 +32,29 @@ Color _btnColor(EventType t) {
   }
 }
 
+/// Emoji de cada tipo, pra notificacao nao ficar sem graca.
+String _emoji(EventType t) {
+  switch (t) {
+    case EventType.soneca:
+      return '😴';
+    case EventType.mamada:
+      return '🍼';
+    case EventType.despertar:
+      return '🌙';
+    case EventType.sono:
+      return '🛌';
+    case EventType.refeicao:
+      return '🥣';
+  }
+}
+
 List<NotificationButton> _notifButtons() => [
       for (final t in kNotifButtons)
-        NotificationButton(id: t.id, text: t.label, textColor: _btnColor(t)),
+        NotificationButton(
+          id: t.id,
+          text: '${_emoji(t)} ${t.label}',
+          textColor: _btnColor(t),
+        ),
     ];
 
 @pragma('vm:entry-point')
@@ -70,8 +90,8 @@ class BabyTaskHandler extends TaskHandler {
     }
     final baby = await SessionStore.babyName();
     FlutterForegroundTask.updateService(
-      notificationTitle: '$baby — $msg',
-      notificationText: 'Soneca · Mamada · Despertar',
+      notificationTitle: '👶 $baby — $msg',
+      notificationText: '😴 Soneca · 🍼 Mamada · 🌙 Despertar',
       notificationButtons: _notifButtons(),
     );
   }
@@ -88,8 +108,8 @@ class BabyTaskHandler extends TaskHandler {
   Future<void> _refreshNotification() async {
     final baby = await SessionStore.babyName();
     FlutterForegroundTask.updateService(
-      notificationTitle: '$baby — diário aberto',
-      notificationText: 'Soneca · Mamada · Despertar num toque',
+      notificationTitle: '👶 $baby — diário aberto',
+      notificationText: '😴 Soneca · 🍼 Mamada · 🌙 Despertar',
       notificationButtons: _notifButtons(),
     );
   }
@@ -134,8 +154,8 @@ class ForegroundController {
     } else {
       await FlutterForegroundTask.startService(
         serviceId: 256,
-        notificationTitle: '$baby — diário aberto',
-        notificationText: 'Soneca · Mamada · Despertar num toque',
+        notificationTitle: '👶 $baby — diário aberto',
+        notificationText: '😴 Soneca · 🍼 Mamada · 🌙 Despertar',
         notificationButtons: _notifButtons(),
         callback: startCallback,
       );

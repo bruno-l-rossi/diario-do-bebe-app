@@ -21,12 +21,15 @@ class AppStore extends ChangeNotifier {
 
   String get babyName => (profile?['baby_name'] as String?) ?? '';
   String? get babyBirth => profile?['baby_birth'] as String?;
+  String get motherName => (profile?['mother_name'] as String?) ?? '';
+  String? get babyPhoto => profile?['baby_photo'] as String?;
 
   Future<void> load() async {
     final uid = _sb.auth.currentUser?.id;
     if (uid == null) return;
     try {
-      final rows = await _sb.from('events').select().order('ts');
+      final rows =
+          await _sb.from('events').select().order('ts').limit(5000);
       events = (rows as List)
           .map((r) => BabyEvent.fromRow(r as Map<String, dynamic>))
           .toList();
@@ -39,13 +42,20 @@ class AppStore extends ChangeNotifier {
     }
   }
 
-  Future<void> saveProfile(String name, String? birth) async {
+  Future<void> saveProfile({
+    required String name,
+    String? birth,
+    String? mother,
+    String? photo,
+  }) async {
     final uid = _sb.auth.currentUser?.id;
     if (uid == null) return;
     await _sb.from('profiles').upsert({
       'user_id': uid,
       'baby_name': name,
       if (birth != null) 'baby_birth': birth,
+      if (mother != null) 'mother_name': mother,
+      if (photo != null) 'baby_photo': photo,
     });
     await SessionStore.saveBabyName(name);
     await load();

@@ -16,6 +16,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final _pass = TextEditingController();
   bool _signup = false;
   bool _loading = false;
+  bool _showPass = false;
   String? _error;
 
   Future<void> _submit() async {
@@ -71,11 +72,19 @@ class _AuthScreenState extends State<AuthScreen> {
               const SizedBox(height: 12),
               TextField(
                 controller: _pass,
-                obscureText: true,
-                decoration: const InputDecoration(
+                obscureText: !_showPass,
+                decoration: InputDecoration(
                   labelText: 'Senha',
                   filled: true,
                   fillColor: AppColors.card,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _showPass ? Icons.visibility_off : Icons.visibility,
+                      color: AppColors.muted,
+                    ),
+                    tooltip: _showPass ? 'Esconder senha' : 'Mostrar senha',
+                    onPressed: () => setState(() => _showPass = !_showPass),
+                  ),
                 ),
               ),
               if (_error != null) ...[

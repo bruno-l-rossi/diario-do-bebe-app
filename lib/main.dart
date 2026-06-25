@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'config.dart';
 import 'data/store.dart';
+import 'data/settings.dart';
 import 'theme.dart';
 import 'services/foreground.dart';
 import 'services/session_store.dart';
@@ -15,6 +16,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   FlutterForegroundTask.initCommunicationPort();
   await initializeDateFormatting('pt_BR', null);
+  await Settings.load();
   await ForegroundController.init();
   await Supabase.initialize(
     url: Config.supabaseUrl,

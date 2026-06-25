@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../data/store.dart';
 import '../theme.dart';
@@ -8,6 +7,7 @@ import '../utils/format.dart';
 import 'today_tab.dart';
 import 'history_tab.dart';
 import 'stats_tab.dart';
+import 'settings_screen.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -116,9 +116,12 @@ class _Header extends StatelessWidget {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.logout, color: AppColors.muted),
-            tooltip: 'Sair',
-            onPressed: () => Supabase.instance.client.auth.signOut(),
+            icon: const Icon(Icons.settings_outlined, color: AppColors.muted),
+            tooltip: 'Configurações',
+            onPressed: () => Navigator.push(
+              ctx,
+              MaterialPageRoute(builder: (_) => const SettingsScreen()),
+            ),
           ),
         ],
       ),

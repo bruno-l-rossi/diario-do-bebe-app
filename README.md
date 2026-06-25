@@ -51,13 +51,23 @@ Se mesmo assim não aparecer na tela de bloqueio, é configuração do sistema (
 
 Mesma identidade do app web: tema azul-marinho, três abas (Hoje, Histórico, Estatísticas), cards de registro coloridos por tipo, cards de sessão em andamento com cronômetro, e os gráficos (linha, barra e rosca) com `fl_chart`, espelhando os do site.
 
+## Configurações
+
+No ícone de engrenagem (canto da home): editar perfil do bebê (nome, foto pela câmera ou galeria, data de nascimento, nome da mãe), trocar o formato de hora (24h ou AM/PM, afeta todo o app), ligar/desligar a notificação fixa, e sair da conta.
+
+A foto é guardada no perfil (base64), compatível com o app web. O formato de hora fica salvo no aparelho.
+
+## Editar e apagar registro
+
+No Histórico: tocar num registro abre a edição de horário (início e, nas sessões, o fim) pra corrigir um lançamento feito atrasado. Arrastar pro lado apaga.
+
 ## Já feito vs. próximo
 
-Feito: login, os 5 registros, notificação fixa com os 3 botões (texto colorido) na tela de bloqueio, abas Hoje/Histórico/Estatísticas fiéis ao site, gráficos de tendência e por horário, seletor de período (Semana/Mês/Tudo), apagar registro, build automática.
+Feito: login, os 5 registros, notificação fixa com os 3 botões (texto colorido) na tela de bloqueio, abas Hoje/Histórico/Estatísticas fiéis ao site, gráficos de tendência e por horário, seletor de período, configurações (perfil + foto + formato de hora), editar e apagar registro, ícone próprio do app, build automática.
 
 Limite da notificação (do Android, não do app): os botões de notificação são texto, não dá pra fazer botão redondo grande colorido. O que dá, e está feito, é colorir o texto de cada botão com a cor do tipo.
 
-Próximo, se valer: tela de configurações no app (nome/foto do bebê e formato de hora 24h/AM-PM — hoje o nome vem do perfil criado no app web), editar o horário de um registro, e ícone do app próprio (hoje é o ícone padrão do Flutter).
+Próximo: widget na tela inicial com os botões (superfície nativa separada, feita num passo dedicado). Mais pra frente, se valer: lembrete de intervalo, exportar CSV, desfazer pela notificação.
 
 ## Privacidade
 

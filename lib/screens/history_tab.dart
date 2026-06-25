@@ -5,6 +5,7 @@ import '../data/store.dart';
 import '../models/baby_event.dart';
 import '../theme.dart';
 import '../utils/format.dart';
+import 'event_edit_sheet.dart';
 
 class HistoryTab extends StatelessWidget {
   const HistoryTab({super.key});
@@ -108,7 +109,9 @@ class _EventRow extends StatelessWidget {
             false;
       },
       onDismissed: (_) => s.deleteEvent(e.id),
-      child: Container(
+      child: GestureDetector(
+        onTap: () => showEventEditSheet(context, e),
+        child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
         decoration: BoxDecoration(
@@ -152,6 +155,7 @@ class _EventRow extends StatelessWidget {
                       fontFeatures: [FontFeature.tabularFigures()])),
           ],
         ),
+      ),
       ),
     );
   }
