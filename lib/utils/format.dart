@@ -1,6 +1,7 @@
-/// Formatação de hora/duração, portada do app web. Respeita o formato
-/// escolhido nas Configurações (24h ou AM/PM).
 import '../data/settings.dart';
+
+// Formatação de hora/duração, portada do app web. Respeita o formato
+// escolhido nas Configurações (24h ou AM/PM).
 
 String _p2(int n) => n.toString().padLeft(2, '0');
 

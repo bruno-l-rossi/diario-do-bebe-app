@@ -119,7 +119,7 @@ class _Header extends StatelessWidget {
             icon: const Icon(Icons.settings_outlined, color: AppColors.muted),
             tooltip: 'Configurações',
             onPressed: () => Navigator.push(
-              ctx,
+              context,
               MaterialPageRoute(builder: (_) => const SettingsScreen()),
             ),
           ),
