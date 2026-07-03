@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config.dart';
 import '../models/baby_event.dart';
 import '../services/events_repo.dart';
+import '../services/foreground.dart';
 import '../services/session_store.dart';
 
 /// Cérebro do app: carrega todos os eventos e o perfil em memória e calcula os
@@ -160,10 +161,31 @@ class AppStore extends ChangeNotifier {
   }
 
   // ---- ações (escrevem pela REST, igual a notificação) ----
+
+  /// Último toggle, guardado pro Desfazer do snackbar.
+  ToggleInfo? _lastToggle;
+
   Future<String> toggle(EventType type) async {
-    final msg = await EventsRepo.toggleSession(type);
+    final r = await EventsRepo.toggleSession(type);
+    _lastToggle = r;
     await load();
-    return msg;
+    ForegroundController.refresh();
+    return r.msg;
+  }
+
+  /// Desfaz o último toggle: apaga a sessão recém-aberta ou reabre a
+  /// recém-encerrada. Um nível só, suficiente pro toque errado.
+  Future<void> undoLastToggle() async {
+    final t = _lastToggle;
+    if (t == null) return;
+    _lastToggle = null;
+    if (t.openedId != null) {
+      await _sb.from('events').delete().eq('id', t.openedId!);
+    } else if (t.closedId != null) {
+      await _sb.from('events').update({'end_ts': null}).eq('id', t.closedId!);
+    }
+    await load();
+    ForegroundController.refresh();
   }
 
   Future<void> addRefeicao({
@@ -179,6 +201,7 @@ class AppStore extends ChangeNotifier {
   Future<void> deleteEvent(String id) async {
     await _sb.from('events').delete().eq('id', id);
     await load();
+    ForegroundController.refresh();
   }
 
   Future<void> updateEventTime(String id, DateTime ts, DateTime? end) async {
@@ -187,5 +210,6 @@ class AppStore extends ChangeNotifier {
       if (end != null) 'end_ts': end.toUtc().toIso8601String(),
     }).eq('id', id);
     await load();
+    ForegroundController.refresh();
   }
 }

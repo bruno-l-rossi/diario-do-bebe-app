@@ -25,9 +25,11 @@ Fonte do sistema (Roboto no Android). Sem fonte importada, pra abrir rápido. Ta
 
 ## Layout
 
-- Home: foto do bebê, saudação pela hora, idade. Embaixo, os 5 botões grandes de registro. Botão de sessão aberta (mamada/soneca/despertar/sono em andamento) muda de "Começar" pra "Encerrar" e mostra o tempo correndo.
-- Notificação fixa: título com o nome do bebê, 3 botões em destaque (Soneca, Mamada, Despertar). Visual nativo do Android, com o ícone do app.
+- Home: foto do bebê, saudação pela hora, idade. Resumo do dia em 2x2 (número grande) com a última mamada em destaque. Painel de registro em grid 2 colunas: Soneca, Mamada, Refeição, Despertar (mesma ordem da notificação) + Sono noturno em faixa cheia. Sessão aberta muda o rótulo do botão e mostra o tempo correndo.
+- Ícones desenhados (lua, copo, talheres, estrelas) no lugar de emoji: emoji muda por aparelho e quebra a identidade. Mesma família visual no app e na notificação.
+- Notificação fixa: layout customizado (RemoteViews) com 4 botões de ícone redondo colorido e rótulo embaixo, estilo CamScanner. Título mostra a sessão aberta com cronômetro. Refeição abre a ficha no app.
 - Histórico: lista por dia (ciclo do bebê, do acordar ao acordar), agrupada, com hora e duração.
+- Micro: animação de escala no toque, haptic ao registrar, snackbar com Desfazer.
 
 ## Princípio
 

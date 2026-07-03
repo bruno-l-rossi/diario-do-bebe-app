@@ -27,11 +27,19 @@ class SessionStore {
     await p.remove(_kUserId);
   }
 
-  static Future<String?> accessToken() async =>
-      (await SharedPreferences.getInstance()).getString(_kAccess);
+  // reload(): o servico nativo (Kotlin) tambem renova o token e grava aqui;
+  // sem reler do disco, o cache do isolate ficaria com token velho.
+  static Future<String?> accessToken() async {
+    final p = await SharedPreferences.getInstance();
+    await p.reload();
+    return p.getString(_kAccess);
+  }
 
-  static Future<String?> refreshToken() async =>
-      (await SharedPreferences.getInstance()).getString(_kRefresh);
+  static Future<String?> refreshToken() async {
+    final p = await SharedPreferences.getInstance();
+    await p.reload();
+    return p.getString(_kRefresh);
+  }
 
   static Future<String?> userId() async =>
       (await SharedPreferences.getInstance()).getString(_kUserId);

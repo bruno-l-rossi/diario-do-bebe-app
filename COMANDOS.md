@@ -21,7 +21,7 @@ Assim que subir, o GitHub já começa a montar o arquivo do app sozinho.
 ```bash
 cd "OUTPUTS/diario-do-bebe-app"
 git add .
-git commit -m "Senha visível no login, emojis na notificação, ícone novo, histórico completo"
+git commit -m "Notificação com botões de ícone (estilo scanner) + home repaginada"
 git push
 ```
 
@@ -36,8 +36,8 @@ abra o repositório no GitHub → aba **Actions** → clique na execução mais 
 cole no Claude Code pra marcar uma versão:
 
 ```bash
-git tag v1.3.0
-git push origin v1.3.0
+git tag v1.4.0
+git push origin v1.4.0
 ```
 
 O arquivo aparece na aba **Releases** do repositório, com link fixo pra baixar e reinstalar quando quiser. Toda vez que você (ou eu) mudar algo, é só repetir com `v1.0.1`, `v1.0.2`, etc.

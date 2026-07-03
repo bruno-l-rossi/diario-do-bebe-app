@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import '../data/store.dart';
+import '../services/foreground.dart';
 import '../theme.dart';
 import '../utils/format.dart';
 import 'today_tab.dart';
 import 'history_tab.dart';
 import 'stats_tab.dart';
+import 'refeicao_sheet.dart';
 import 'settings_screen.dart';
 
 class MainShell extends StatefulWidget {
@@ -16,13 +18,45 @@ class MainShell extends StatefulWidget {
   State<MainShell> createState() => _MainShellState();
 }
 
-class _MainShellState extends State<MainShell> {
+class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   int _tab = 0;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     if (AppStore.I.events.isEmpty) AppStore.I.load();
+    // App aberto pelo botão Refeição da notificação: abre a ficha direto.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkLaunchAction());
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Pode ter registro novo feito pela notificação enquanto o app dormia.
+      AppStore.I.load();
+      _checkLaunchAction();
+    }
+  }
+
+  Future<void> _checkLaunchAction() async {
+    final action = await ForegroundController.consumeLaunchAction();
+    if (action == 'refeicao' && mounted) {
+      final ok = await showRefeicaoSheet(context);
+      if (ok == true && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Refeição registrada'),
+              duration: Duration(seconds: 1)),
+        );
+      }
+    }
   }
 
   @override

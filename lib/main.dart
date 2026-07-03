@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -7,17 +6,14 @@ import 'config.dart';
 import 'data/store.dart';
 import 'data/settings.dart';
 import 'theme.dart';
-import 'services/foreground.dart';
 import 'services/session_store.dart';
 import 'screens/auth_screen.dart';
 import 'screens/main_shell.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  FlutterForegroundTask.initCommunicationPort();
   await initializeDateFormatting('pt_BR', null);
   await Settings.load();
-  await ForegroundController.init();
   await Supabase.initialize(
     url: Config.supabaseUrl,
     anonKey: Config.supabaseKey,

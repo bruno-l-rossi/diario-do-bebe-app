@@ -6,26 +6,23 @@ Mesmo backend do app web (Supabase). Os dados são os mesmos: quem já usa o web
 
 ## O que faz
 
-- **Notificação fixa** com 3 botões: Soneca, Mamada, Despertar. Tocar grava na hora, mesmo pela tela bloqueada (serviço em primeiro plano, tipo `specialUse`, sem o timeout de 6h do `dataSync`).
+- **Notificação fixa de layout customizado** (estilo CamScanner): 4 botões com ícone redondo colorido e rótulo — Soneca, Mamada, Refeição, Despertar. Soneca/Mamada/Despertar gravam na hora, mesmo pela tela bloqueada; Refeição abre a ficha no app (precisa de quantidade e quem serviu). Sessão aberta vira cronômetro no título da notificação e o rótulo do botão muda (ex.: Soneca → Acordou).
 - **5 registros** dentro do app: soneca, mamada, despertar e sono noturno (começa/termina) e refeição (quanto comeu + quem serviu).
 - **Login** por email/senha, mesma conta do app web.
 - **Histórico** agrupado pelo dia do ciclo do bebê (do acordar ao acordar; corte às 5h quando não há sono pra ancorar).
-
-Refeição e Sono não entram como botão da notificação: refeição precisa de mais toques (quantidade e quem serviu), então abre o app.
 
 ## Stack
 
 - **Flutter** (a casca nova). Reaproveita 100% do backend.
 - **Supabase** (Postgres + Auth + RLS por `user_id`), o mesmo do app web.
-- **flutter_foreground_task** pra notificação fixa com botões.
-- Gravação no Supabase pela REST, com refresh de token, pra funcionar também no isolate do serviço (igual o service worker fazia no PWA).
+- **Serviço nativo em Kotlin** (`native/`) pra notificação fixa: RemoteViews customizado, tipo `specialUse`, gravação direta na REST do Supabase com refresh de token (mesma lógica do `events_repo.dart`, portada pra `SupabaseApi.kt`). A pasta `native/` é copiada pra dentro de `android/` pelo `tool/patch_android.py` na build.
 
 ## Como vira um arquivo instalável
 
 Você não compila nada na sua máquina. O **GitHub Actions** compila o APK na nuvem a cada push (arquivo `.github/workflows/build-apk.yml`):
 
 1. Gera a estrutura Android com `flutter create`.
-2. Injeta as permissões e o serviço da notificação (`tool/patch_android.py`).
+2. Injeta o código nativo, as permissões, o serviço e as dependências (`tool/patch_android.py` copia a pasta `native/` pra dentro).
 3. Roda `flutter build apk --release` (assinado com a chave de debug, suficiente pra instalar por link).
 4. Sobe o APK em **Artifacts** (toda execução) e em **Releases** (quando você cria uma tag `v*`).
 
@@ -39,7 +36,9 @@ A pasta `android/` é gerada na nuvem e não fica no repositório (está no `.gi
 
 ## Tela de bloqueio (o ponto principal)
 
-A notificação usa um canal de importância DEFAULT (`diario_bebe_lockscreen_v2`) e visibilidade pública, que é o que faz ela aparecer na tela de bloqueio. Como a importância de um canal só é definida na primeira criação, mudei o id do canal: ao instalar a versão nova, o canal é recriado já com a configuração certa.
+A notificação usa um canal de importância DEFAULT (`diario_bebe_botoes_v3`) e visibilidade pública, que é o que faz ela aparecer na tela de bloqueio. Como a importância de um canal só é definida na primeira criação, o id do canal muda a cada mudança de configuração: ao instalar a versão nova, o canal é recriado já com a configuração certa.
+
+Os botões grandes aparecem na notificação **expandida**. Na tela de bloqueio, se ela vier recolhida, arrasta pra baixo pra expandir; a maioria dos aparelhos lembra o estado.
 
 Se mesmo assim não aparecer na tela de bloqueio, é configuração do sistema (varia por fabricante). Confira:
 
@@ -49,7 +48,7 @@ Se mesmo assim não aparecer na tela de bloqueio, é configuração do sistema (
 
 ## Visual
 
-Mesma identidade do app web: tema azul-marinho, três abas (Hoje, Histórico, Estatísticas), cards de registro coloridos por tipo, cards de sessão em andamento com cronômetro, e os gráficos (linha, barra e rosca) com `fl_chart`, espelhando os do site.
+Mesma identidade do app web (tema azul-marinho, três abas), com a home repaginada: resumo do dia em 2x2 com número grande e a última mamada em destaque, painel de registro em grid 2 colunas com botões grandes, ícones desenhados no lugar dos emojis (mesma família da notificação), animação de toque com haptic, e snackbar com Desfazer nos registros. Gráficos (linha, barra e rosca) com `fl_chart`, espelhando os do site.
 
 ## Configurações
 
@@ -63,9 +62,9 @@ No Histórico: tocar num registro abre a edição de horário (início e, nas se
 
 ## Já feito vs. próximo
 
-Feito: login, os 5 registros, notificação fixa com os 3 botões (texto colorido) na tela de bloqueio, abas Hoje/Histórico/Estatísticas fiéis ao site, gráficos de tendência e por horário, seletor de período, configurações (perfil + foto + formato de hora), editar e apagar registro, ícone próprio do app, build automática.
+Feito: login, os 5 registros, notificação customizada com 4 botões de ícone (grava pela tela bloqueada, Refeição abre a ficha, cronômetro de sessão), home em grid com ícones e resumo grande, abas Hoje/Histórico/Estatísticas, gráficos de tendência e por horário, seletor de período, configurações (perfil + foto + formato de hora), editar e apagar registro, Desfazer, religa sozinha após reiniciar o celular, ícone próprio do app, build automática.
 
-Limite da notificação (do Android, não do app): os botões de notificação são texto, não dá pra fazer botão redondo grande colorido. O que dá, e está feito, é colorir o texto de cada botão com a cor do tipo.
+O limite antigo (botão de notificação só texto) caiu: o layout customizado (RemoteViews) desenha os botões redondos coloridos, igual apps de scanner fazem.
 
 Próximo: widget na tela inicial com os botões (superfície nativa separada, feita num passo dedicado). Mais pra frente, se valer: lembrete de intervalo, exportar CSV, desfazer pela notificação.
 

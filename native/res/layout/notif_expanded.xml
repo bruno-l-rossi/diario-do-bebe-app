@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Notificação expandida: título + cronômetro em cima, 4 botões de ícone
+     redondo colorido com rótulo embaixo (estilo CamScanner). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="4dp"
+    android:paddingBottom="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/n_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textStyle="bold"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification.Title" />
+
+        <Chronometer
+            android:id="@+id/n_chrono"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:visibility="gone"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/n_sub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textAppearance="@android:style/TextAppearance.Material.Notification" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/b_soneca"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_nb_soneca"
+                android:background="@drawable/bg_nb_soneca"
+                android:tint="#0D1B2A"
+                android:contentDescription="Soneca" />
+
+            <TextView
+                android:id="@+id/b_soneca_tx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:singleLine="true"
+                android:textSize="11sp"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/b_mamada"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_nb_mamada"
+                android:background="@drawable/bg_nb_mamada"
+                android:tint="#0D1B2A"
+                android:contentDescription="Mamada" />
+
+            <TextView
+                android:id="@+id/b_mamada_tx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:singleLine="true"
+                android:textSize="11sp"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/b_refeicao"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_nb_refeicao"
+                android:background="@drawable/bg_nb_refeicao"
+                android:tint="#0D1B2A"
+                android:contentDescription="Refeição" />
+
+            <TextView
+                android:id="@+id/b_refeicao_tx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:singleLine="true"
+                android:textSize="11sp"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/b_despertar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_nb_despertar"
+                android:background="@drawable/bg_nb_despertar"
+                android:tint="#0D1B2A"
+                android:contentDescription="Despertar" />
+
+            <TextView
+                android:id="@+id/b_despertar_tx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:singleLine="true"
+                android:textSize="11sp"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

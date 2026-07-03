@@ -70,7 +70,8 @@ class _EventRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = AppStore.I;
     final dot = kDotColor[e.type] ?? AppColors.card2;
-    final emoji = kTypeEmoji[e.type] ?? '•';
+    final icon = kTypeIcon[e.type];
+    final color = kTypeColor[e.type] ?? AppColors.ink;
     final (t1, t2) = _texts(s);
     final timeR = e.isSession ? '' : fmtH(e.ts);
 
@@ -126,7 +127,9 @@ class _EventRow extends StatelessWidget {
               height: 36,
               alignment: Alignment.center,
               decoration: BoxDecoration(color: dot, shape: BoxShape.circle),
-              child: Text(emoji, style: const TextStyle(fontSize: 18)),
+              child: icon != null
+                  ? Icon(icon, size: 18, color: color)
+                  : const Text('•'),
             ),
             const SizedBox(width: 11),
             Expanded(

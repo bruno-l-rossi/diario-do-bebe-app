@@ -63,6 +63,17 @@ const Map<String, String> kTypeEmoji = {
   'despertar': '🌙',
 };
 
+/// Ícones por tipo, mesma família visual da notificação (lua, copo, talheres,
+/// estrelas). Emoji saiu dos botões: muda de cara por aparelho e briga com a
+/// identidade.
+const Map<String, IconData> kTypeIcon = {
+  'soneca': Icons.bedtime,
+  'sono': Icons.bed,
+  'mamada': Icons.local_drink,
+  'refeicao': Icons.restaurant,
+  'despertar': Icons.auto_awesome,
+};
+
 /// Qualidade da refeicao (0..3), igual ao site.
 const List<({String nome, String emoji, Color cor})> kQuality = [
   (nome: 'Recusou', emoji: '🚫', cor: AppColors.qBad),

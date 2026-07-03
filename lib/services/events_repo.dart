@@ -4,27 +4,55 @@ import 'package:http/http.dart' as http;
 import '../config.dart';
 import 'session_store.dart';
 
+/// Resultado de um toggle: a frase de feedback e o que aconteceu, pra dar
+/// pra desfazer (apagar o evento aberto ou reabrir o encerrado).
+class ToggleInfo {
+  final String msg;
+  final String? openedId;
+  final String? closedId;
+  const ToggleInfo(this.msg, {this.openedId, this.closedId});
+}
+
 /// Grava e le eventos direto na REST do Supabase, usando o token guardado.
-/// Funciona tanto no app quanto no isolate do servico em primeiro plano, sem
-/// depender do client do supabase_flutter (que vive so no isolate principal).
+/// Mesma logica que o servico nativo da notificacao roda em Kotlin
+/// (SupabaseApi.kt): a fonte da verdade e o Supabase, pra app e notificacao
+/// nunca divergirem.
 class EventsRepo {
+  static const _msgOpen = {
+    'soneca': 'Soneca iniciada',
+    'mamada': 'Mamada iniciada',
+    'despertar': 'Despertar registrado',
+    'sono': 'Sono noturno iniciado',
+  };
+  static const _msgClose = {
+    'soneca': 'Acordou da soneca',
+    'mamada': 'Mamada encerrada',
+    'despertar': 'Voltou a dormir',
+    'sono': 'Sono encerrado. Bom dia!',
+  };
+
   /// Toca um botao de sessao (soneca/mamada/despertar/sono): se nao ha sessao
   /// aberta no servidor, abre uma (ts=agora); se ha, encerra (end_ts=agora).
-  /// A fonte da verdade e o Supabase, pra app e servico nunca divergirem.
-  /// Retorna uma frase curta pro feedback ("Soneca iniciada"/"Soneca encerrada").
-  static Future<String> toggleSession(EventType type) async {
+  static Future<ToggleInfo> toggleSession(EventType type) async {
     final open = await _openEvent(type);
     if (open == null) {
-      await _insert({
+      final row = await _insert({
         'type': type.id,
         'ts': DateTime.now().toUtc().toIso8601String(),
       });
-      return '${type.label} iniciada';
+      return ToggleInfo(
+        _msgOpen[type.id] ?? '${type.label} iniciada',
+        openedId: row?['id'] as String?,
+      );
     } else {
-      await _patch(open['id'] as String, {
+      final id = open['id'] as String;
+      await _patch(id, {
         'end_ts': DateTime.now().toUtc().toIso8601String(),
       });
-      return '${type.label} encerrada';
+      return ToggleInfo(
+        _msgClose[type.id] ?? '${type.label} encerrada',
+        closedId: id,
+      );
     }
   }
 
