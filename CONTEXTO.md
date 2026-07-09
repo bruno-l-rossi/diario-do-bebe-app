@@ -1,14 +1,16 @@
 # CONTEXTO.md — pra retomar o desenvolvimento
 
-Leia isto (e o README + DESIGN.md) antes de mexer no projeto. Atualizado na v1.7.0 (jul/2026).
+Leia isto (e o README + DESIGN.md) antes de mexer no projeto. Atualizado na v1.8.0 (jul/2026).
 
 ## O que é
 
 App Android nativo (Flutter + serviço Kotlin) pra registrar a rotina de um bebê num toque. Irmão do app web (PWA na pasta `OUTPUTS/diario-do-bebe`); mesmo backend Supabase, mesma conta, mesmos dados. O diferencial do nativo é a notificação fixa com botões que gravam pela tela de bloqueio.
 
-## Estado atual (v1.7.0+8)
+## Estado atual (v1.8.0+9)
 
-Funciona de ponta a ponta: login/cadastro com fluxo de boas-vindas (mãe → bebê → foto), tour de 4 telas no primeiro login, home com registro num toque (5 tipos + nota do dia), notificação fixa always-on (única do app, reposta sozinha se sumir), histórico em card por dia com editar/apagar no toque, estatísticas que abrem com 7 dias de dados (resumo em frases, tendência vs período anterior, linha do tempo 24h), ajuda com tutorial + email, tema claro/escuro seguindo o celular.
+Funciona de ponta a ponta: login/cadastro com fluxo de boas-vindas (mãe → bebê → foto), tour de 4 telas no primeiro login, home com registro num toque (5 tipos + nota do dia), notificação fixa always-on (única do app, reposta sozinha se sumir), histórico em card por dia com editar/apagar no toque, aba Notas com calendário mensal (dias com nota clicáveis, editar/apagar, últimas 3 notas), estatísticas que abrem com 7 dias de dados (resumo em frases, tendência vs período anterior, linha do tempo 24h), ajuda com tutorial + email, tema claro/escuro seguindo o celular.
+
+Navegação: 4 abas (Hoje, Histórico, Notas, Estatísticas). A aba Notas (`lib/screens/notas_tab.dart`) agrupa por data civil (não pelo "dia do bebê"): nota é lembrança do dia em que foi escrita.
 
 ## Arquitetura em 1 minuto
 

@@ -7,6 +7,7 @@ import '../theme.dart';
 import '../utils/format.dart';
 import 'today_tab.dart';
 import 'history_tab.dart';
+import 'notas_tab.dart';
 import 'stats_tab.dart';
 import 'refeicao_sheet.dart';
 import 'settings_screen.dart';
@@ -74,7 +75,12 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                 Expanded(
                   child: IndexedStack(
                     index: _tab,
-                    children: const [TodayTab(), HistoryTab(), StatsTab()],
+                    children: const [
+                      TodayTab(),
+                      HistoryTab(),
+                      NotasTab(),
+                      StatsTab(),
+                    ],
                   ),
                 ),
               ],
@@ -96,6 +102,10 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
               icon: Icon(Icons.list_alt_outlined),
               selectedIcon: Icon(Icons.list_alt),
               label: 'Histórico'),
+          NavigationDestination(
+              icon: Icon(Icons.favorite_border),
+              selectedIcon: Icon(Icons.favorite),
+              label: 'Notas'),
           NavigationDestination(
               icon: Icon(Icons.insights_outlined),
               selectedIcon: Icon(Icons.insights),

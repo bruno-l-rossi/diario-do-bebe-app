@@ -73,6 +73,8 @@ Na 1.6.0: notificação blindada (reposta sozinha se sumir; única notificação
 
 Na 1.7.0: identidade visual nova (ver DESIGN.md), adaptada do DESIGN-meta.md: tema claro aconchegante (branco quente, tinta café) + o escuro de madrugada de sempre, trocados pelo modo do celular em tempo real; botões e seletores sempre pílula; cartões 20-24px com borda hairline; azul de ação mais quente, usado com parcimônia; snackbar flutuante e diálogos arredondados. Por baixo, `AppColors` virou getter de paleta dinâmica (cores nunca em `const`).
 
+Na 1.8.0: aba **Notas** (4ª aba, coração): calendário do mês com os dias que têm nota marcados e clicáveis; tocar no dia abre as notas pra ler, editar ou apagar; botão "Escrever uma nota" no topo e as 3 últimas notas embaixo do calendário. As notas seguem aparecendo no Histórico junto com o resto do dia.
+
 O limite antigo (botão de notificação só texto) caiu: o layout customizado (RemoteViews) desenha os botões redondos coloridos, igual apps de scanner fazem.
 
 Próximo: widget na tela inicial com os botões (superfície nativa separada, feita num passo dedicado). Mais pra frente, se valer: lembrete de intervalo, exportar CSV, desfazer pela notificação.
