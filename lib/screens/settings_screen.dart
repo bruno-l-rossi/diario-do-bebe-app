@@ -8,6 +8,7 @@ import '../data/store.dart';
 import '../services/foreground.dart';
 import '../theme.dart';
 import '../utils/format.dart';
+import 'help_sheet.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -48,12 +49,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.photo_camera, color: AppColors.accent),
+              leading: Icon(Icons.photo_camera, color: AppColors.accent),
               title: const Text('Tirar foto'),
               onTap: () => Navigator.pop(ctx, ImageSource.camera),
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library, color: AppColors.accent),
+              leading: Icon(Icons.photo_library, color: AppColors.accent),
               title: const Text('Escolher da galeria'),
               onTap: () => Navigator.pop(ctx, ImageSource.gallery),
             ),
@@ -138,10 +139,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   _Avatar(photo: _photo, name: _name.text),
                   Container(
                     padding: const EdgeInsets.all(5),
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                         color: AppColors.accent, shape: BoxShape.circle),
-                    child: const Icon(Icons.edit,
-                        size: 14, color: Color(0xFF06121F)),
+                    child: Icon(Icons.edit,
+                        size: 14, color: AppColors.onAccent),
                   ),
                 ],
               ),
@@ -152,7 +153,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               padding: const EdgeInsets.only(top: 8),
               child: Center(
                 child: Text(idade,
-                    style: const TextStyle(color: AppColors.muted)),
+                    style: TextStyle(color: AppColors.muted)),
               ),
             ),
           const SizedBox(height: 16),
@@ -178,35 +179,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Container(
             decoration: BoxDecoration(
                 color: AppColors.card,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: AppColors.line)),
             padding: const EdgeInsets.symmetric(horizontal: 14),
             child: SwitchListTile(
               contentPadding: EdgeInsets.zero,
               activeColor: AppColors.accent,
-              title: const Text('Botões fixos na tela de bloqueio',
+              title: Text('Botões fixos na tela de bloqueio',
                   style: TextStyle(color: AppColors.ink)),
               value: _notifOn,
               onChanged: _toggleNotif,
+            ),
+          ),
+          _section('Ajuda'),
+          Container(
+            decoration: BoxDecoration(
+                color: AppColors.card,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.line)),
+            child: ListTile(
+              leading:
+                  Icon(Icons.help_outline, color: AppColors.accent),
+              title: Text('Tutorial e contato',
+                  style: TextStyle(color: AppColors.ink, fontSize: 14)),
+              subtitle: Text('Rever o tour ou falar com a gente',
+                  style: TextStyle(color: AppColors.muted, fontSize: 12)),
+              onTap: () => showHelpSheet(context),
             ),
           ),
           _section('Conta'),
           Container(
             decoration: BoxDecoration(
                 color: AppColors.card,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: AppColors.line)),
             child: Column(
               children: [
                 ListTile(
-                  leading: const Icon(Icons.mail_outline, color: AppColors.muted),
+                  leading: Icon(Icons.mail_outline, color: AppColors.muted),
                   title: Text(email,
-                      style: const TextStyle(color: AppColors.ink, fontSize: 14)),
+                      style: TextStyle(color: AppColors.ink, fontSize: 14)),
                 ),
-                const Divider(height: 1, color: AppColors.line),
+                Divider(height: 1, color: AppColors.line),
                 ListTile(
-                  leading: const Icon(Icons.logout, color: AppColors.qBad),
-                  title: const Text('Sair', style: TextStyle(color: AppColors.qBad)),
+                  leading: Icon(Icons.logout, color: AppColors.qBad),
+                  title: Text('Sair', style: TextStyle(color: AppColors.qBad)),
                   onTap: () => Supabase.instance.client.auth.signOut(),
                 ),
               ],
@@ -221,7 +238,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _section(String t) => Padding(
         padding: const EdgeInsets.fromLTRB(2, 22, 2, 10),
         child: Text(t.toUpperCase(),
-            style: const TextStyle(
+            style: TextStyle(
                 color: AppColors.muted,
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
@@ -233,7 +250,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       TextField(
         controller: c,
         onChanged: onChanged,
-        style: const TextStyle(color: AppColors.ink),
+        style: TextStyle(color: AppColors.ink),
         decoration: InputDecoration(
           labelText: label,
           filled: true,
@@ -287,12 +304,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             padding: const EdgeInsets.symmetric(vertical: 10),
             decoration: BoxDecoration(
               color: active ? AppColors.accent : Colors.transparent,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(100),
             ),
             child: Text(label,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    color: active ? const Color(0xFF06121F) : AppColors.muted,
+                    color: active ? AppColors.onAccent : AppColors.muted,
                     fontWeight: FontWeight.w700)),
           ),
         ),
@@ -302,7 +319,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Container(
       decoration: BoxDecoration(
           color: AppColors.card,
-          borderRadius: BorderRadius.circular(13),
+          borderRadius: BorderRadius.circular(100),
           border: Border.all(color: AppColors.line)),
       child: Row(children: [seg('24h', '24 horas'), seg('12h', 'AM / PM')]),
     );
@@ -343,7 +360,7 @@ class _Avatar extends StatelessWidget {
 
   Widget _ini() => Text(
         name.trim().isNotEmpty ? name.trim()[0].toUpperCase() : '🍼',
-        style: const TextStyle(
+        style: TextStyle(
             color: AppColors.accentSoft, fontSize: 34, fontWeight: FontWeight.w700),
       );
 }

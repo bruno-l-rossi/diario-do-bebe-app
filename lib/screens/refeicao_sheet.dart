@@ -11,7 +11,7 @@ Future<bool?> showRefeicaoSheet(BuildContext context) {
     backgroundColor: AppColors.card,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
     builder: (_) => const _RefeicaoForm(),
   );
@@ -61,11 +61,11 @@ class _RefeicaoFormState extends State<_RefeicaoForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Refeição',
+          Text('Refeição',
               style: TextStyle(
                   fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.ink)),
           const SizedBox(height: 16),
-          const Text('Quanto comeu', style: TextStyle(color: AppColors.muted)),
+          Text('Quanto comeu', style: TextStyle(color: AppColors.muted)),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -75,14 +75,14 @@ class _RefeicaoFormState extends State<_RefeicaoForm> {
                 label: Text(_qualities[i]),
                 selected: sel,
                 selectedColor: AppColors.accent,
-                labelStyle: TextStyle(color: sel ? AppColors.bg : AppColors.ink),
+                labelStyle: TextStyle(color: sel ? AppColors.onAccent : AppColors.ink),
                 backgroundColor: AppColors.bg,
                 onSelected: (_) => setState(() => _quality = i),
               );
             }),
           ),
           const SizedBox(height: 16),
-          const Text('Quem serviu', style: TextStyle(color: AppColors.muted)),
+          Text('Quem serviu', style: TextStyle(color: AppColors.muted)),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -92,7 +92,7 @@ class _RefeicaoFormState extends State<_RefeicaoForm> {
                 label: Text(e.value),
                 selected: sel,
                 selectedColor: AppColors.accent,
-                labelStyle: TextStyle(color: sel ? AppColors.bg : AppColors.ink),
+                labelStyle: TextStyle(color: sel ? AppColors.onAccent : AppColors.ink),
                 backgroundColor: AppColors.bg,
                 onSelected: (_) => setState(() => _servedBy = e.key),
               );
@@ -101,7 +101,7 @@ class _RefeicaoFormState extends State<_RefeicaoForm> {
           const SizedBox(height: 16),
           TextField(
             controller: _note,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Nota (opcional)',
               filled: true,
               fillColor: AppColors.bg,

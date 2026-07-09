@@ -8,6 +8,7 @@ import '../config.dart';
 import '../services/foreground.dart';
 import '../theme.dart';
 import '../utils/format.dart';
+import 'nota_sheet.dart';
 import 'refeicao_sheet.dart';
 
 /// Home repaginada: resumo 2x2 com número grande + última mamada, sessões em
@@ -119,7 +120,49 @@ class _TodayTabState extends State<TodayTab> {
           ]),
           const SizedBox(height: 10),
           _sonoTile(s),
+          const SizedBox(height: 10),
+          _notaTile(),
         ],
+      ),
+    );
+  }
+
+  /// Nota do dia: o lado "diário" do app. Texto livre, sem análise.
+  Widget _notaTile() {
+    return _Press(
+      onTap: _busy
+          ? null
+          : () async {
+              final ok = await showNotaSheet(context);
+              if (ok == true) _snack('Guardado no diário 💛');
+            },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+        decoration: _tileDeco(kNotaColor, false),
+        child: Row(
+          children: [
+            _IconBubble(icon: Icons.favorite, color: kNotaColor),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Nota do dia',
+                      style: TextStyle(
+                          color: AppColors.ink,
+                          fontSize: 15.5,
+                          fontWeight: FontWeight.w700)),
+                  SizedBox(height: 1),
+                  Text('uma lembrança, uma conquista, como ele estava',
+                      style:
+                          TextStyle(color: AppColors.muted, fontSize: 11.5)),
+                ],
+              ),
+            ),
+            Icon(Icons.chevron_right,
+                color: kNotaColor.withValues(alpha: 0.7), size: 22),
+          ],
+        ),
       ),
     );
   }
@@ -129,17 +172,17 @@ class _TodayTabState extends State<TodayTab> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.card,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.line),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
       child: SwitchListTile(
         contentPadding: EdgeInsets.zero,
         activeColor: AppColors.accent,
-        title: const Text('Botões fixos na tela de bloqueio',
+        title: Text('Botões fixos na tela de bloqueio',
             style: TextStyle(
                 color: AppColors.ink, fontWeight: FontWeight.w600)),
-        subtitle: const Text(
+        subtitle: Text(
           'Soneca, Mamada, Refeição e Despertar num toque, com o app fechado.',
           style: TextStyle(color: AppColors.muted, fontSize: 12),
         ),
@@ -244,7 +287,7 @@ class _TodayTabState extends State<TodayTab> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(a != null ? 'Começar o dia' : 'Sono noturno',
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: AppColors.ink,
                           fontSize: 15.5,
                           fontWeight: FontWeight.w700)),
@@ -253,7 +296,7 @@ class _TodayTabState extends State<TodayTab> {
                       a != null
                           ? 'dormindo desde ${fmtH(a.ts)}'
                           : 'a dormida da noite',
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: AppColors.muted, fontSize: 11.5)),
                 ],
               ),
@@ -269,7 +312,7 @@ class _TodayTabState extends State<TodayTab> {
 
 BoxDecoration _tileDeco(Color color, bool active) => BoxDecoration(
       color: color.withValues(alpha: active ? 0.18 : 0.09),
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(22),
       border: Border.all(
         color: color.withValues(alpha: active ? 0.95 : 0.4),
         width: active ? 1.8 : 1.2,
@@ -303,7 +346,7 @@ class _Resumo extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
       decoration: BoxDecoration(
         color: AppColors.card,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(22),
         border: Border.all(color: AppColors.line),
       ),
       child: Column(
@@ -329,7 +372,7 @@ class _Resumo extends StatelessWidget {
               const SizedBox(width: 7),
               Expanded(
                 child: Text(ultimaTxt,
-                    style: const TextStyle(
+                    style: TextStyle(
                         color: AppColors.muted, fontSize: 12.5)),
               ),
             ],
@@ -350,7 +393,7 @@ class _Stat extends StatelessWidget {
           children: [
             FittedBox(
               child: Text(n,
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: AppColors.ink,
                       fontSize: 24,
                       height: 1.1,
@@ -358,7 +401,7 @@ class _Stat extends StatelessWidget {
             ),
             const SizedBox(height: 1),
             Text(label,
-                style: const TextStyle(color: AppColors.muted, fontSize: 11)),
+                style: TextStyle(color: AppColors.muted, fontSize: 11)),
           ],
         ),
       );
@@ -373,7 +416,7 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.fromLTRB(2, 14, 2, 8),
         child: Text(text.toUpperCase(),
-            style: const TextStyle(
+            style: TextStyle(
                 color: AppColors.muted,
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
@@ -463,7 +506,7 @@ class _BigTile extends StatelessWidget {
             Text(title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                     color: AppColors.ink,
                     fontSize: 15.5,
                     fontWeight: FontWeight.w700)),
@@ -472,7 +515,7 @@ class _BigTile extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style:
-                    const TextStyle(color: AppColors.muted, fontSize: 11.5)),
+                    TextStyle(color: AppColors.muted, fontSize: 11.5)),
           ],
         ),
       ),
@@ -500,7 +543,7 @@ class _OngoingCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(22),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -563,7 +606,7 @@ class _Skeleton extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
             color: AppColors.card.withValues(alpha: 0.6),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(22),
           ),
         );
     return ListView(

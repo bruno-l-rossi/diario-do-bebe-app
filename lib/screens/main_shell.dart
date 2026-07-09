@@ -10,6 +10,7 @@ import 'history_tab.dart';
 import 'stats_tab.dart';
 import 'refeicao_sheet.dart';
 import 'settings_screen.dart';
+import 'help_sheet.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -112,22 +113,30 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = AppStore.I;
     final baby = s.babyName;
+    final mae = s.motherName;
     final idade = ageLabel(s.babyBirth);
-    final greet = baby.isEmpty
+    final quem = mae.isNotEmpty
+        ? mae
+        : (baby.isEmpty ? '' : 'você e $baby');
+    final greet = quem.isEmpty
         ? saudacao(DateTime.now().hour)
-        : '${saudacao(DateTime.now().hour)}, você e $baby';
+        : '${saudacao(DateTime.now().hour)}, $quem';
     final title = baby.isEmpty
         ? 'Diário do Bebê'
         : (idade.isEmpty ? baby : '$baby · $idade');
 
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 14, 8, 12),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0xFF16335A), AppColors.bg],
-          stops: [0, 0.9],
+          // Um véu de cor no topo: azul de noite, areia quente de dia.
+          colors: [
+            kIsDark ? const Color(0xFF16335A) : const Color(0xFFF1E7DA),
+            AppColors.bg,
+          ],
+          stops: const [0, 0.9],
         ),
       ),
       child: Row(
@@ -139,10 +148,10 @@ class _Header extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(greet,
-                    style: const TextStyle(
+                    style: TextStyle(
                         color: AppColors.muted, fontSize: 12.5)),
                 Text(title,
-                    style: const TextStyle(
+                    style: TextStyle(
                         color: AppColors.ink,
                         fontSize: 19,
                         fontWeight: FontWeight.w700)),
@@ -150,7 +159,12 @@ class _Header extends StatelessWidget {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.settings_outlined, color: AppColors.muted),
+            icon: Icon(Icons.help_outline, color: AppColors.muted),
+            tooltip: 'Ajuda',
+            onPressed: () => showHelpSheet(context),
+          ),
+          IconButton(
+            icon: Icon(Icons.settings_outlined, color: AppColors.muted),
             tooltip: 'Configurações',
             onPressed: () => Navigator.push(
               context,
@@ -199,7 +213,7 @@ class _Avatar extends StatelessWidget {
 
   Widget _initial() => Text(
         name.isNotEmpty ? name.trim()[0].toUpperCase() : '🍼',
-        style: const TextStyle(
+        style: TextStyle(
             color: AppColors.accentSoft, fontSize: 22, fontWeight: FontWeight.w700),
       );
 }

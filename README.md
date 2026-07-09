@@ -8,8 +8,11 @@ Mesmo backend do app web (Supabase). Os dados são os mesmos: quem já usa o web
 
 - **Notificação fixa de layout customizado** (estilo CamScanner): 4 botões com ícone redondo colorido e rótulo — Soneca, Mamada, Refeição, Despertar. Soneca/Mamada/Despertar gravam na hora, mesmo pela tela bloqueada; Refeição abre a ficha no app (precisa de quantidade e quem serviu). Sessão aberta vira cronômetro no título da notificação e o rótulo do botão muda (ex.: Soneca → Acordou).
 - **5 registros** dentro do app: soneca, mamada, despertar e sono noturno (começa/termina) e refeição (quanto comeu + quem serviu).
-- **Login** por email/senha, mesma conta do app web.
-- **Histórico** agrupado pelo dia do ciclo do bebê (do acordar ao acordar; corte às 5h quando não há sono pra ancorar).
+- **Nota do dia**: texto livre pro lado "diário" do app ("hoje ficou de pé sozinho pela primeira vez!"). Fica guardada no histórico, editável, sem entrar em nenhuma análise. É memória pra mãe reler depois.
+- **Login** por email/senha, mesma conta do app web, com fluxo de boas-vindas no primeiro cadastro (nome da mãe, do bebê, nascimento e foto) e tour de 4 telas no primeiro login.
+- **Ajuda** no "?" do topo (e nas configurações): rever o tutorial ou falar com a gente por email (rideblan33@caramujorecords.com.br).
+- **Histórico** agrupado pelo dia do ciclo do bebê (do acordar ao acordar; corte às 5h quando não há sono pra ancorar): um card por dia com resumo no cabeçalho, e tocar num registro abre as ações na cara (editar horário, editar nota, apagar).
+- **Uma única notificação**, silenciosa e always-on: não some ao abrir o app nem ao tocar num botão, e se o sistema (ou um deslize no Android 14+) tirar ela da barra, ela se reposta sozinha (a cada atualização e num vigia de 10 em 10 minutos).
 
 ## Stack
 
@@ -58,11 +61,17 @@ A foto é guardada no perfil (base64), compatível com o app web. O formato de h
 
 ## Editar e apagar registro
 
-No Histórico: tocar num registro abre a edição de horário (início e, nas sessões, o fim) pra corrigir um lançamento feito atrasado. Arrastar pro lado apaga.
+No Histórico: tocar num registro abre um menu com as ações visíveis — **Editar horário** (início e, nas sessões, o fim) pra corrigir um lançamento feito atrasado, **Editar nota** (nas notas do dia) e **Apagar** (com confirmação). Nada escondido em gesto de arrastar.
 
 ## Já feito vs. próximo
 
 Feito: login, os 5 registros, notificação customizada com 4 botões de ícone (grava pela tela bloqueada, Refeição abre a ficha, cronômetro de sessão), home em grid com ícones e resumo grande, abas Hoje/Histórico/Estatísticas, gráficos de tendência e por horário, seletor de período, configurações (perfil + foto + formato de hora), editar e apagar registro, Desfazer, religa sozinha após reiniciar o celular, ícone próprio do app, build automática.
+
+Na 1.5.0: fluxo de boas-vindas depois de criar a conta (nome da mãe, do bebê, nascimento e foto, uma pergunta por tela), tour de 4 telas no primeiro login (reacessível nas configurações), saudação com o nome da mãe, ícone novo (emoji do bebê 👶) e o nome "Diário do Bebê" embaixo do ícone. Estatísticas repaginadas: abrem depois de 7 dias de registros (com contagem de progresso antes disso), períodos Semana/Mês/Trimestre/Tudo, card "Hoje vs o normal" com insight em frase, setinhas de tendência contra o período anterior em cada card, e "A semana num olhar" (linha do tempo 24h dos últimos 7 dias, estilo Huckleberry).
+
+Na 1.6.0: notificação blindada (reposta sozinha se sumir; única notificação do app), Nota do dia (texto livre do diário, criada na home, editável no histórico; o banco ganhou o tipo `nota` na migração `add_nota_event_type`), Histórico repaginado (um card por dia, resumo no cabeçalho, toque abre editar/apagar sem gesto escondido) e botão de Ajuda no topo (tutorial + contato por email).
+
+Na 1.7.0: identidade visual nova (ver DESIGN.md), adaptada do DESIGN-meta.md: tema claro aconchegante (branco quente, tinta café) + o escuro de madrugada de sempre, trocados pelo modo do celular em tempo real; botões e seletores sempre pílula; cartões 20-24px com borda hairline; azul de ação mais quente, usado com parcimônia; snackbar flutuante e diálogos arredondados. Por baixo, `AppColors` virou getter de paleta dinâmica (cores nunca em `const`).
 
 O limite antigo (botão de notificação só texto) caiu: o layout customizado (RemoteViews) desenha os botões redondos coloridos, igual apps de scanner fazem.
 

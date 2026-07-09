@@ -102,6 +102,21 @@ class EventsRepo {
     });
   }
 
+  /// Registra uma nota do dia: texto livre do diario ("hoje ele ficou de pe
+  /// pela primeira vez"). Sem analise em cima; e memoria pra reler depois.
+  static Future<void> insertNota(String text, {DateTime? at}) async {
+    await _insert({
+      'type': 'nota',
+      'ts': (at ?? DateTime.now()).toUtc().toIso8601String(),
+      'note': text,
+    });
+  }
+
+  /// Atualiza o texto de uma nota existente.
+  static Future<void> updateNota(String id, String text) async {
+    await _patch(id, {'note': text});
+  }
+
   /// Le os ultimos eventos (pra historico e resumo). Ordenado do mais novo.
   static Future<List<Map<String, dynamic>>> recent({int limit = 200}) async {
     final res = await _send(

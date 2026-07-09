@@ -10,3 +10,6 @@ pubspec.lock
 *.iml
 .idea/
 .DS_Store
+
+# Lixo temporário do sistema de arquivos (sessões do Claude)
+.fuse_hidden*

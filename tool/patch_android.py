@@ -27,6 +27,15 @@ PERMISSIONS = """    <uses-permission android:name="android.permission.INTERNET"
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 """
 
+# Permite abrir o app de email pelo "Falar com a gente" (url_launcher/mailto).
+QUERIES = """    <queries>
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="mailto" />
+        </intent>
+    </queries>
+"""
+
 COMPONENTS = """        <service
             android:name=".NotifService"
             android:foregroundServiceType="specialUse"
@@ -79,11 +88,21 @@ def patch_manifest() -> None:
         xml = f.read()
     if "FOREGROUND_SERVICE_SPECIAL_USE" not in xml:
         xml = re.sub(r"(<application\b)", PERMISSIONS + r"\1", xml, count=1)
+    if "android.intent.action.SENDTO" not in xml:
+        xml = re.sub(r"(<application\b)", QUERIES + r"    \1", xml, count=1)
     if ".NotifService" not in xml:
         xml = xml.replace("</application>", COMPONENTS + "    </application>", 1)
+    # Nome que aparece embaixo do ícone no celular (flutter create gera
+    # "diario_do_bebe"; aqui vira o nome de verdade, com acento).
+    xml = re.sub(
+        r'android:label="[^"]*"',
+        'android:label="Diário do Bebê"',
+        xml,
+        count=1,
+    )
     with open(MANIFEST, "w", encoding="utf-8") as f:
         f.write(xml)
-    print("AndroidManifest.xml: permissões + serviço + receiver ok.")
+    print("AndroidManifest.xml: permissões + serviço + receiver + label ok.")
 
 
 def patch_gradle() -> None:

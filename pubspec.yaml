@@ -1,7 +1,7 @@
 name: diario_do_bebe
 description: Diario do bebe — registro da rotina com um toque, notificacao fixa na tela de bloqueio.
 publish_to: "none"
-version: 1.4.0+5
+version: 1.7.0+8
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -15,6 +15,7 @@ dependencies:
   intl: ^0.19.0
   fl_chart: ^0.69.0
   image_picker: ^1.1.2
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_lints: ^4.0.0
@@ -23,7 +24,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-# Ícone do app (lua/estrelas), gerado na build pela CI.
+# Ícone do app (emoji do bebê 👶 sobre azul-marinho), gerado na build pela CI.
 flutter_launcher_icons:
   android: true
   ios: false

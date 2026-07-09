@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../theme.dart';
 
 /// Login e cadastro por email/senha, mesma conta do app web.
+/// Tom acolhedor: é a porta de entrada de uma mãe cansada, não um formulário.
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
 
@@ -52,18 +53,27 @@ class _AuthScreenState extends State<AuthScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('🌙', style: TextStyle(fontSize: 56)),
+              const Text('👶', style: TextStyle(fontSize: 56)),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 'Diário do Bebê',
                 style: TextStyle(
                     fontSize: 26, fontWeight: FontWeight.bold, color: AppColors.ink),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                _signup
+                    ? 'Vamos criar o cantinho do seu bebê.\nLeva menos de um minuto.'
+                    : 'Que bom te ver de novo.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: AppColors.muted, fontSize: 14, height: 1.5),
               ),
               const SizedBox(height: 24),
               TextField(
                 controller: _email,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Email',
                   filled: true,
                   fillColor: AppColors.card,
@@ -90,7 +100,7 @@ class _AuthScreenState extends State<AuthScreen> {
               if (_error != null) ...[
                 const SizedBox(height: 12),
                 Text(_error!,
-                    style: const TextStyle(color: Color(0xFFE0AF68))),
+                    style: TextStyle(color: AppColors.qOk)),
               ],
               const SizedBox(height: 20),
               SizedBox(
@@ -103,7 +113,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   onPressed: _loading ? null : _submit,
                   child: Text(_loading
                       ? '...'
-                      : (_signup ? 'Criar conta' : 'Entrar')),
+                      : (_signup ? 'Começar nosso diário' : 'Entrar')),
                 ),
               ),
               const SizedBox(height: 8),
@@ -112,8 +122,8 @@ class _AuthScreenState extends State<AuthScreen> {
                 child: Text(
                   _signup
                       ? 'Já tenho conta. Entrar'
-                      : 'Criar uma conta nova',
-                  style: const TextStyle(color: AppColors.muted),
+                      : 'Primeira vez aqui? Criar nossa conta',
+                  style: TextStyle(color: AppColors.muted),
                 ),
               ),
             ],

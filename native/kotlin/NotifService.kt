@@ -50,12 +50,22 @@ class NotifService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
+    /** Reposta a notificação de tempos em tempos: se o sistema (ou um deslize
+     *  no Android 14+) tirou ela da barra, ela volta sozinha. */
+    private val watchdog = object : Runnable {
+        override fun run() {
+            update()
+            handler.postDelayed(this, 10 * 60_000L)
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
         running = true
         worker = HandlerThread("diario-notif").also { it.start() }
         handler = Handler(worker.looper)
         createChannel()
+        handler.postDelayed(watchdog, 10 * 60_000L)
     }
 
     override fun onDestroy() {
@@ -146,6 +156,7 @@ class NotifService : Service() {
             .setSmallIcon(R.drawable.ic_stat_lua)
             .setContentTitle(title)
             .setContentText(sub)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setShowWhen(false)
@@ -189,8 +200,9 @@ class NotifService : Service() {
     }
 
     private fun update() {
-        val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        nm.notify(NOTIF_ID, build())
+        // Repostar via startForeground (e não nm.notify) reanexa a notificação
+        // ao serviço: se ela sumiu por qualquer motivo, volta pra barra.
+        foreground()
     }
 
     private fun createChannel() {

@@ -6,7 +6,11 @@ import '../models/baby_event.dart';
 import '../theme.dart';
 import '../utils/format.dart';
 import 'event_edit_sheet.dart';
+import 'nota_sheet.dart';
 
+/// Histórico: um card por dia, com os registros em linhas separadas por
+/// divisória (em vez de um monte de cartão solto). Tocar numa linha abre
+/// as ações na cara: editar ou apagar. Nada escondido em gesto.
 class HistoryTab extends StatelessWidget {
   const HistoryTab({super.key});
 
@@ -33,31 +37,77 @@ class HistoryTab extends StatelessWidget {
         itemCount: keys.length,
         itemBuilder: (_, i) {
           final list = groups[keys[i]]!;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(2, 16, 2, 8),
-                child: Row(
-                  children: [
-                    Text(s.dayLabel(list.first.ts),
-                        style: const TextStyle(
-                            color: AppColors.accentSoft,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700)),
-                    const SizedBox(width: 8),
-                    Text(
-                        '${list.length} registro${list.length > 1 ? 's' : ''}',
-                        style: const TextStyle(
-                            color: AppColors.muted, fontSize: 11)),
-                  ],
-                ),
-              ),
-              ...list.map((e) => _EventRow(e: e)),
-            ],
-          );
+          return _DayCard(list: list);
         },
       ),
+    );
+  }
+}
+
+/// O dia inteiro num card só: cabeçalho com resumo + linhas com divisória.
+class _DayCard extends StatelessWidget {
+  final List<BabyEvent> list;
+  const _DayCard({required this.list});
+
+  String _resumo() {
+    int c(String t) => list.where((e) => e.type == t).length;
+    final parts = <String>[];
+    void add(int n, String singular, [String? plural]) {
+      if (n > 0) parts.add('$n ${n > 1 ? (plural ?? '${singular}s') : singular}');
+    }
+
+    add(c('soneca'), 'soneca');
+    add(c('mamada'), 'mamada');
+    add(c('refeicao'), 'refeição', 'refeições');
+    add(c('despertar'), 'despertar', 'despertares');
+    add(c('nota'), 'nota');
+    return parts.join(' · ');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = AppStore.I;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(2, 18, 2, 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(s.dayLabel(list.first.ts),
+                  style: TextStyle(
+                      color: AppColors.accentSoft,
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w700)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(_resumo(),
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: AppColors.muted, fontSize: 11)),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.card,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: AppColors.line),
+          ),
+          child: Column(
+            children: [
+              for (var i = 0; i < list.length; i++) ...[
+                if (i > 0)
+                  Divider(
+                      height: 1, indent: 60, color: AppColors.line),
+                _EventRow(e: list[i]),
+              ],
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -71,56 +121,16 @@ class _EventRow extends StatelessWidget {
     final s = AppStore.I;
     final dot = kDotColor[e.type] ?? AppColors.card2;
     final icon = kTypeIcon[e.type];
-    final color = kTypeColor[e.type] ?? AppColors.ink;
+    final color = e.type == 'nota' ? kNotaColor : (kTypeColor[e.type] ?? AppColors.ink);
     final (t1, t2) = _texts(s);
-    final timeR = e.isSession ? '' : fmtH(e.ts);
 
-    return Dismissible(
-      key: ValueKey(e.id),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
-        margin: const EdgeInsets.only(bottom: 8),
-        decoration: BoxDecoration(
-          color: AppColors.qBad.withValues(alpha: 0.85),
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: const Icon(Icons.delete_outline, color: Colors.white),
-      ),
-      confirmDismiss: (_) async {
-        return await showDialog<bool>(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                backgroundColor: AppColors.card,
-                title: const Text('Apagar registro?'),
-                content: Text('$t1 — $timeR'),
-                actions: [
-                  TextButton(
-                      onPressed: () => Navigator.pop(ctx, false),
-                      child: const Text('Cancelar')),
-                  FilledButton(
-                      style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.qBad),
-                      onPressed: () => Navigator.pop(ctx, true),
-                      child: const Text('Apagar')),
-                ],
-              ),
-            ) ??
-            false;
-      },
-      onDismissed: (_) => s.deleteEvent(e.id),
-      child: GestureDetector(
-        onTap: () => showEventEditSheet(context, e),
-        child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
+    return InkWell(
+      onTap: () => _showActions(context),
+      borderRadius: BorderRadius.circular(20),
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
-        decoration: BoxDecoration(
-          color: AppColors.card,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.line),
-        ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               width: 36,
@@ -137,28 +147,121 @@ class _EventRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(t1,
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: AppColors.ink,
                           fontSize: 14,
                           fontWeight: FontWeight.w600)),
                   if (t2.isNotEmpty) ...[
                     const SizedBox(height: 1),
                     Text(t2,
-                        style: const TextStyle(
-                            color: AppColors.muted, fontSize: 12)),
+                        maxLines: e.type == 'nota' ? 4 : 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: e.type == 'nota'
+                                ? AppColors.ink.withValues(alpha: 0.85)
+                                : AppColors.muted,
+                            fontSize: 12,
+                            height: 1.4)),
                   ],
                 ],
               ),
             ),
-            if (timeR.isNotEmpty)
-              Text(timeR,
-                  style: const TextStyle(
-                      color: AppColors.muted,
-                      fontSize: 13,
-                      fontFeatures: [FontFeature.tabularFigures()])),
+            const SizedBox(width: 8),
+            Text(fmtH(e.ts),
+                style: TextStyle(
+                    color: AppColors.muted,
+                    fontSize: 12.5,
+                    fontFeatures: [FontFeature.tabularFigures()])),
+            const SizedBox(width: 2),
+            Icon(Icons.chevron_right, size: 16, color: AppColors.line),
           ],
         ),
       ),
+    );
+  }
+
+  /// Ações do registro, na cara: editar ou apagar. Sem gesto escondido.
+  void _showActions(BuildContext context) {
+    final s = AppStore.I;
+    final (t1, _) = _texts(s);
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: AppColors.card,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+              child: Row(
+                children: [
+                  Icon(kTypeIcon[e.type], size: 18,
+                      color: e.type == 'nota'
+                          ? kNotaColor
+                          : (kTypeColor[e.type] ?? AppColors.ink)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text('$t1 · ${fmtH(e.ts)}',
+                        style: TextStyle(
+                            color: AppColors.ink,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700)),
+                  ),
+                ],
+              ),
+            ),
+            if (e.type == 'nota')
+              ListTile(
+                leading: Icon(Icons.edit, color: AppColors.accent),
+                title: const Text('Editar nota'),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  showNotaSheet(context, event: e);
+                },
+              )
+            else
+              ListTile(
+                leading:
+                    Icon(Icons.edit_calendar, color: AppColors.accent),
+                title: const Text('Editar horário'),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  showEventEditSheet(context, e);
+                },
+              ),
+            ListTile(
+              leading: Icon(Icons.delete_outline, color: AppColors.qBad),
+              title: Text('Apagar',
+                  style: TextStyle(color: AppColors.qBad)),
+              onTap: () async {
+                Navigator.pop(ctx);
+                final ok = await showDialog<bool>(
+                  context: context,
+                  builder: (dctx) => AlertDialog(
+                    backgroundColor: AppColors.card,
+                    title: const Text('Apagar registro?'),
+                    content: Text('$t1 · ${fmtH(e.ts)}'),
+                    actions: [
+                      TextButton(
+                          onPressed: () => Navigator.pop(dctx, false),
+                          child: const Text('Cancelar')),
+                      FilledButton(
+                          style: FilledButton.styleFrom(
+                              backgroundColor: AppColors.qBad),
+                          onPressed: () => Navigator.pop(dctx, true),
+                          child: const Text('Apagar')),
+                    ],
+                  ),
+                );
+                if (ok == true) await s.deleteEvent(e.id);
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
@@ -204,6 +307,8 @@ class _EventRow extends StatelessWidget {
           if ((e.note ?? '').isNotEmpty) e.note!,
         ];
         return ('Refeição ${q.emoji} ${q.nome}', parts.join(' · '));
+      case 'nota':
+        return ('Nota do dia', e.note ?? '');
       default:
         return (e.type, '');
     }
@@ -224,7 +329,7 @@ class _Empty extends StatelessWidget {
               const SizedBox(height: 12),
               Text(text,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: AppColors.muted, fontSize: 14)),
+                  style: TextStyle(color: AppColors.muted, fontSize: 14)),
             ],
           ),
         ),

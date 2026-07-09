@@ -198,6 +198,16 @@ class AppStore extends ChangeNotifier {
     await load();
   }
 
+  Future<void> addNota(String text) async {
+    await EventsRepo.insertNota(text);
+    await load();
+  }
+
+  Future<void> updateNota(String id, String text) async {
+    await EventsRepo.updateNota(id, text);
+    await load();
+  }
+
   Future<void> deleteEvent(String id) async {
     await _sb.from('events').delete().eq('id', id);
     await load();

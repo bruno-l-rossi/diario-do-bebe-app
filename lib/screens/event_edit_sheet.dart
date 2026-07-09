@@ -13,7 +13,7 @@ Future<void> showEventEditSheet(BuildContext context, BabyEvent e) {
     backgroundColor: AppColors.card,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
     builder: (_) => _EditForm(event: e),
   );
@@ -82,7 +82,7 @@ class _EditFormState extends State<_EditForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Editar horário — $label',
-              style: const TextStyle(
+              style: TextStyle(
                   color: AppColors.ink,
                   fontSize: 18,
                   fontWeight: FontWeight.bold)),
@@ -128,15 +128,15 @@ class _EditFormState extends State<_EditForm> {
         child: Row(
           children: [
             Text(label,
-                style: const TextStyle(color: AppColors.muted, fontSize: 13)),
+                style: TextStyle(color: AppColors.muted, fontSize: 13)),
             const Spacer(),
             Text(
               '${value.day}/${value.month} · ${fmtH(value)}',
-              style: const TextStyle(
+              style: TextStyle(
                   color: AppColors.ink, fontSize: 15, fontWeight: FontWeight.w600),
             ),
             const SizedBox(width: 8),
-            const Icon(Icons.edit_calendar, size: 18, color: AppColors.accent),
+            Icon(Icons.edit_calendar, size: 18, color: AppColors.accent),
           ],
         ),
       ),
